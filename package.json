@@ -1,0 +1,13 @@
+{
+  "name": "extensoes-omp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Coleção pessoal de extensões para Oh My Pi.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "setup": "node scripts/install.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check extensions/pets-pomodoro/axolote.js && node --check scripts/install.mjs"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "extensions": [
+    {
+      "id": "pets-pomodoro",
+      "name": "Pets + Pomodoro",
+      "description": "Axolote, passarinho e gato com XP, vínculo e Pomodoro com pausas proporcionais.",
+      "file": "extensions/pets-pomodoro/axolote.js",
+      "installAs": "axolote.js",
+      "docs": "extensions/pets-pomodoro/README.md"
+    }
+  ]
+}

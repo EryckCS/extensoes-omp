@@ -1,0 +1,14 @@
+node_modules/
+coverage/
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+.env
+.env.*
+!.env.example
+**/axolote-data/
+**/backups/
+work/
+*.log
+
