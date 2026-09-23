@@ -8,7 +8,7 @@ Thumbs.db
 .env.*
 !.env.example
 **/axolote-data/
+**/pomodoro-data/
 **/backups/
 work/
 *.log
-

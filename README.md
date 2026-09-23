@@ -1,23 +1,50 @@
 # Extensões OMP
 
-Minha coleção de extensões para o [Oh My Pi](https://github.com/can1357/oh-my-pi), organizada para instalar em qualquer um dos meus computadores e receber novas personalizações.
+Coleção pessoal de extensões para o [Oh My Pi](https://github.com/can1357/oh-my-pi). Cada extensão tem sua própria pasta, arquivo e guia, e pode ser instalada individualmente.
 
-## Extensões disponíveis
+## Pets
 
-| Extensão | O que faz | Documentação |
-| --- | --- | --- |
-| **Pets + Pomodoro** | Axolote, passarinho e gato com XP, níveis, vínculo, cuidados e cronômetro de estudo com pausas proporcionais | [Guia completo](extensions/pets-pomodoro/README.md) |
+Axolote **Loti**, passarinho **Piu** e gato **Mochi** para acompanhar o terminal, com desenhos coloridos, animações, nomes, cores, vínculo, XP e níveis.
 
-Os pets e o cronômetro funcionam localmente e não fazem chamadas de IA. Perguntas enviadas normalmente ao OMP continuam consumindo o provedor configurado nele.
+- **Pasta:** [`extensions/pets/`](extensions/pets/)
+- **Comando:** `/pet`
+- **Dados locais:** `axolote-data/`
+- **Funciona sozinho:** sim; não precisa do Pomodoro.
 
-## Instalação rápida
+```sh
+node scripts/install.mjs --only pets
+```
 
-Requisitos:
+[Comandos e documentação dos Pets](extensions/pets/README.md)
 
-- Oh My Pi instalado. Pets + Pomodoro foi desenvolvido para a API de extensões da versão **18.0.11**.
-- **Node.js 20 ou superior** para o instalador e os testes. As extensões atuais rodam dentro do OMP, sem dependências externas.
-- Git para clonar, ou **Code → Download ZIP** no GitHub para baixar a pasta.
-- Terminal com fonte monoespaçada e cores ANSI.
+---
+
+## Pomodoro
+
+Cronômetro de estudo com duração escolhida pelo usuário, pausa normal de **20% do estudo**, pausa longa após quatro sessões, avisos e controles de iniciar, pausar, continuar e cancelar.
+
+- **Pasta:** [`extensions/pomodoro/`](extensions/pomodoro/)
+- **Comando:** `/pomodoro`
+- **Dados locais:** `pomodoro-data/`
+- **Funciona sozinho:** sim; não precisa dos Pets.
+
+```sh
+node scripts/install.mjs --only pomodoro
+```
+
+[Comandos e documentação do Pomodoro](extensions/pomodoro/README.md)
+
+---
+
+### Usar as duas juntas
+
+Quando Pets e Pomodoro estão carregados na **mesma sessão do OMP**, concluir um estudo concede **50 XP aos pets**. A comunicação é por evento; uma extensão não importa o código nem acessa os arquivos da outra. Sessões concluídas sem Pets carregado não concedem XP retroativo.
+
+Ambas funcionam localmente, sem chamadas de IA. Perguntas enviadas normalmente ao OMP continuam usando seu provedor.
+
+## Instalar em outro PC
+
+Requisitos: Oh My Pi (API de extensões desenvolvida para **18.0.11**), Node.js **20+** para o instalador e terminal com fonte monoespaçada. Não é preciso executar `npm install`.
 
 Feche o OMP. No PowerShell, Linux ou macOS:
 
@@ -28,74 +55,70 @@ node scripts/install.mjs
 omp
 ```
 
-Como o repositório é privado, use a conta GitHub com acesso para clonar ou baixar o ZIP. Se baixou o ZIP, entre na pasta extraída e comece pelo comando `node scripts/install.mjs`.
+Sem `--only`, o instalador instala **todas as extensões do catálogo**. Para instalar apenas uma, use o comando do bloco correspondente acima. `--only` não remove outras extensões independentes já instaladas.
 
-Dentro do OMP:
-
-```text
-/pet
-/pomodoro
-```
-
-Não é necessário executar `npm install`. O instalador copia as extensões cadastradas em [extensions.json](extensions.json), faz backup dos arquivos substituídos e preserva seu progresso.
-
-### Instalar uma extensão ou listar o catálogo
+Como o repositório é privado, entre com a conta GitHub que tem acesso. Também é possível usar **Code → Download ZIP**, extrair e executar o instalador dentro da pasta baixada.
 
 ```sh
 node scripts/install.mjs --list
-node scripts/install.mjs --only pets-pomodoro
-```
-
-### Pasta personalizada ou perfis
-
-Destino padrão: `~/.omp/agent/extensions/`, onde `~` é sua pasta de usuário. O instalador também respeita `PI_CODING_AGENT_DIR` e `OMP_CODING_AGENT_DIR`.
-
-Consulte a pasta ativa com `omp config path`. Para um destino diferente, inclusive a pasta de um perfil:
-
-```sh
 node scripts/install.mjs --agent-dir "CAMINHO_DA_PASTA_AGENT"
+node scripts/install.mjs --only pets --agent-dir "CAMINHO_DA_PASTA_AGENT"
 ```
 
-Informe a pasta **agent**, não `extensions`. Não instale uma segunda cópia da mesma extensão com outro nome, pois isso pode duplicar menus e recompensas.
+O destino padrão é `~/.omp/agent/extensions/`. As variáveis `PI_CODING_AGENT_DIR` e `OMP_CODING_AGENT_DIR` são aceitas. Consulte a pasta ativa com `omp config path`; para perfis, informe a pasta **agent** correspondente, não a subpasta `extensions`.
 
-### Instalação manual, sem Node.js
+### Instalação manual
 
-1. Baixe e extraia este repositório.
-2. Crie `extensions` dentro da pasta `agent` do OMP, se necessário.
-3. Se já existir a extensão, guarde uma cópia fora de `extensions`.
-4. Para Pets + Pomodoro, copie [axolote.js](extensions/pets-pomodoro/axolote.js) para `agent/extensions/axolote.js`.
-5. Reinicie o OMP.
+Copie somente os arquivos desejados, com o OMP fechado:
 
-## Atualizar em qualquer PC
+| Origem | Destino dentro da pasta `agent` |
+| --- | --- |
+| [`extensions/pets/axolote.js`](extensions/pets/axolote.js) | `extensions/axolote.js` |
+| [`extensions/pomodoro/pomodoro.js`](extensions/pomodoro/pomodoro.js) | `extensions/pomodoro.js` |
 
-Feche o OMP. Na pasta clonada:
+Guarde backup dos arquivos anteriores fora de `extensions` e reinicie o OMP. Cada arquivo é autocontido; não copie várias versões da mesma extensão, pois isso duplica comandos.
+
+## Atualizar
 
 ```sh
 git pull --ff-only
 node scripts/install.mjs
 ```
 
-Depois abra o OMP novamente. Os backups do código anterior ficam em `agent/backups/extensoes-omp/`.
+Feche o OMP antes e abra novamente depois. Backups do código substituído ficam em `agent/backups/extensoes-omp/`.
+
+### Quem usava a versão combinada
+
+A antiga extensão **Pets + Pomodoro** foi separada:
+
+- Instalar as duas substitui `axolote.js` pela versão somente Pets e adiciona `pomodoro.js`.
+- Instalar somente Pets substitui a versão combinada por Pets.
+- Instalar somente Pomodoro arquiva o antigo `axolote.js` combinado em backup, evitando dois comandos `/pomodoro` concorrentes. Uma versão independente dos Pets já instalada é mantida.
+- O novo Pomodoro usa `pomodoro-data/` e começa com um cronômetro novo; ele não importa o cronômetro da versão combinada.
+- Na instalação manual, retire a versão combinada antiga antes de adicionar o Pomodoro separado.
 
 ## Instalação nova para cada usuário
 
-O repositório contém apenas código, testes e documentação. Ele não inclui XP, nomes personalizados, vínculos, cronômetros salvos, chaves de API ou configurações pessoais.
+O repositório contém apenas código, testes e documentação. Não inclui chaves, XP, preferências nem cronômetros pessoais. Uma instalação nova começa com **0 XP, nível 1**, os pets padrão e nenhum estudo em andamento.
 
-Em uma instalação nova, todos começam com **0 XP e nível 1**, os pets Loti, Piu e Mochi e nenhum cronômetro em andamento. Não é preciso copiar dados de outro computador.
+Os dados criados durante o uso são locais e ignorados pelo Git:
 
-Durante o uso, os dados são criados localmente em `agent/extensions/axolote-data/`, ignorada pelo Git. Reinstalar sobre uma instalação existente atualiza o código e mantém os dados que já estão naquele PC. Para começar do zero nesse caso, feche o OMP e mova a pasta `axolote-data` para outro local antes de abri-lo novamente.
+- Pets: `agent/extensions/axolote-data/`.
+- Pomodoro: `agent/extensions/pomodoro-data/`.
 
-Para um cronômetro previsível, use uma sessão do OMP por pasta de dados; múltiplas janelas não coordenam seus cronômetros entre si.
+Atualizar uma instalação existente mantém seus dados locais. Para zerar uma extensão, feche o OMP e mova a pasta de dados correspondente para outro lugar. Não é necessário transferir dados entre computadores.
 
-## Adicionar novas extensões à coleção
+Use uma sessão do OMP por pasta de dados: múltiplas janelas não coordenam seus cronômetros entre si.
 
-1. Crie uma pasta em `extensions/nome-da-extensao/`.
-2. Coloque o arquivo `.js` e um `README.md` explicando seu uso.
-3. Cadastre a extensão em `extensions.json`, seguindo o modelo existente.
-4. Acrescente uma linha à tabela deste README.
-5. Teste antes de enviar ao GitHub.
+## Adicionar outra extensão
 
-Exemplo de entrada no catálogo:
+1. Crie `extensions/nome-da-extensao/`.
+2. Adicione o arquivo `.js` e um `README.md` próprio.
+3. Registre-a em [`extensions.json`](extensions.json).
+4. Crie **um novo bloco neste README**, com descrição, pasta, comando e instalação individual, seguindo os blocos acima.
+5. Acrescente os testes relevantes e execute `npm test`.
+
+Exemplo de registro:
 
 ```json
 {
@@ -108,32 +131,32 @@ Exemplo de entrada no catálogo:
 }
 ```
 
-O instalador atual distribui **um arquivo JavaScript por extensão**. Esse arquivo deve ser autocontido ou usar apenas APIs fornecidas pelo OMP/Node. Para extensões com vários módulos ou outros recursos, amplie o instalador antes de cadastrá-las.
-
-Nunca inclua chaves, bancos de autenticação ou toda a pasta pessoal do OMP. Coloque no repositório o código da extensão, testes e documentação.
+O instalador distribui um arquivo JavaScript por extensão. Para módulos ou recursos adicionais, amplie o instalador antes de cadastrar a extensão. Nunca inclua chaves de API nem a pasta pessoal do OMP no repositório.
 
 ## Remover ou reverter
 
-Feche o OMP e mova o arquivo da extensão instalada para fora da pasta `extensions`. Guarde sua pasta de dados para preservar o progresso.
+Com o OMP fechado, mova apenas o arquivo da extensão desejada para fora de `agent/extensions/`. Guarde sua pasta de dados se quiser manter o progresso. Para reverter uma atualização, restaure o arquivo do backup.
 
-Para reverter uma atualização, restaure o arquivo correspondente de `agent/backups/extensoes-omp/` e abra o OMP novamente.
-
-## Desenvolvimento e verificação
+## Testes
 
 ```sh
 npm run check
 npm test
 ```
 
-Os testes usam pastas temporárias e relógio simulado. Eles verificam instalação, atualização com backup, preservação dos dados, Pomodoro, XP sem duplicação, recuperação e largura do desenho. O workflow executa os testes em **Windows, Linux e macOS**. A aparência final depende também da fonte do terminal e da versão do OMP.
+Os testes verificam cada extensão isoladamente, a integração opcional de XP, o relógio, a recuperação, o layout e a instalação individual, conjunta e sobre a versão antiga. O GitHub Actions executa as verificações em Windows, Linux e macOS. Os testes simulam a API do OMP; a aparência também depende do terminal.
 
 ```text
-extensions.json                  Catálogo de extensões
-extensions/pets-pomodoro/         Primeira extensão e seu guia
-scripts/install.mjs              Instalador compartilhado
-tests/                           Testes sem chamadas de IA
-.github/workflows/                Verificação automática
+extensions/
+  pets/
+    axolote.js
+    README.md
+  pomodoro/
+    pomodoro.js
+    README.md
+extensions.json
+scripts/install.mjs
+tests/
 ```
 
-Coleção pessoal. Não é um pacote oficial do Oh My Pi.
-
+Coleção pessoal; não é um pacote oficial do Oh My Pi.

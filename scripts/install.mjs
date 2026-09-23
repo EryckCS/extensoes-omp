@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, copyFileSync, renameSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { resolve, join, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +11,8 @@ if (args.includes('--help')) {
 
   node scripts/install.mjs                         Instalar ou atualizar todas
   node scripts/install.mjs --list                  Listar extensões
-  node scripts/install.mjs --only pets-pomodoro     Instalar uma extensão
+  node scripts/install.mjs --only pets             Instalar apenas Pets
+  node scripts/install.mjs --only pomodoro         Instalar apenas Pomodoro
   node scripts/install.mjs --agent-dir "caminho"    Escolher a pasta agent
 
 Destino padrão: ~/.omp/agent/extensions/
@@ -50,6 +51,20 @@ try {
     return { entry, source, content, target: join(agentDir, 'extensions', entry.installAs) };
   });
   const backupDir = join(agentDir, 'backups', 'extensoes-omp', `${Date.now()}-${process.pid}`);
+  // The old combined extension owns /pomodoro too. Archive it when installing
+  // only the standalone timer; installing Pets replaces it through the normal plan.
+  const legacy = join(agentDir, 'extensions', 'axolote.js');
+  if (selected.some(entry => entry.id === 'pomodoro') && !selected.some(entry => entry.id === 'pets') && existsSync(legacy)) {
+    const code = readFileSync(legacy, 'utf8');
+    if (/registerCommand\(\s*["']pomodoro["']/.test(code) && /registerCommand\(\s*["']pet["']/.test(code)) {
+      const expected = resolve(agentDir, 'extensions', 'axolote.js');
+      const destination = resolve(backupDir, 'axolote.js');
+      if (resolve(legacy) !== expected || relative(resolve(agentDir, 'backups'), destination).startsWith('..')) throw new Error('Destino de migração inválido.');
+      mkdirSync(backupDir, { recursive: true });
+      renameSync(legacy, destination);
+      console.log(`Versão combinada arquivada para evitar comandos duplicados: ${destination}`);
+    }
+  }
   for (const { entry, source, content, target } of plan) {
     if (existsSync(target) && content.equals(readFileSync(target))) { console.log(`Já atualizado: ${entry.name}`); continue; }
     if (existsSync(target)) {

@@ -13,7 +13,7 @@ test('novo usuário começa do zero, sem configurações pessoais ou timer ativo
     rmSync(target, { recursive: true, force: true });
   });
   const local = join(root, 'pets.mjs');
-  copyFileSync(fileURLToPath(new URL('../extensions/pets-pomodoro/axolote.js', import.meta.url)), local);
+  copyFileSync(fileURLToPath(new URL('../extensions/pets/axolote.js', import.meta.url)), local);
   const { default: pets } = await import(pathToFileURL(local).href);
   const events = {};
   let widget, timers = 0;
@@ -29,7 +29,7 @@ test('novo usuário começa do zero, sem configurações pessoais ou timer ativo
   for (const name of ['Loti', 'Piu', 'Mochi']) assert.ok(screen.includes(name));
   assert.match(screen, /Lv\. 1/);
   assert.match(screen, /0 XP/);
-  assert.match(screen, /Estudo 25:00 \| pronto \| 0 concluidos/);
+  assert.doesNotMatch(screen, /POMODORO/);
   assert.equal(timers, 0);
   assert.equal(existsSync(join(root, 'axolote-data')), false);
 });

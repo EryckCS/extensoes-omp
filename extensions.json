@@ -2,12 +2,20 @@
   "version": 1,
   "extensions": [
     {
-      "id": "pets-pomodoro",
-      "name": "Pets + Pomodoro",
-      "description": "Axolote, passarinho e gato com XP, vínculo e Pomodoro com pausas proporcionais.",
-      "file": "extensions/pets-pomodoro/axolote.js",
+      "id": "pets",
+      "name": "Pets",
+      "description": "Axolote, passarinho e gato com XP, níveis, vínculo e cuidados.",
+      "file": "extensions/pets/axolote.js",
       "installAs": "axolote.js",
-      "docs": "extensions/pets-pomodoro/README.md"
+      "docs": "extensions/pets/README.md"
+    },
+    {
+      "id": "pomodoro",
+      "name": "Pomodoro",
+      "description": "Cronômetro de estudo independente, com pausas proporcionais e avisos.",
+      "file": "extensions/pomodoro/pomodoro.js",
+      "installAs": "pomodoro.js",
+      "docs": "extensions/pomodoro/README.md"
     }
   ]
 }
